@@ -1,6 +1,8 @@
-from django.http import HttpResponse
 from django.shortcuts import render
+
+from .forms import CarForm
 
 
 def cars(request):
-    return render(request, 'store/buy_car.html')
+    form = CarForm()
+    return render(request, "store/buy_car.html", context={"form": form})
