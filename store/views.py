@@ -3,4 +3,4 @@ from django.shortcuts import render
 
 
 def cars(request):
-    return HttpResponse("Cars")
+    return render(request, 'store/buy_car.html')
