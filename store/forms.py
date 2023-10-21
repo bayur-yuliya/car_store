@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Car, CarType
+from .models import Car, CarType, Client
 
 
 class CarForm(forms.ModelForm):
@@ -16,3 +16,9 @@ class CarForm(forms.ModelForm):
     class Meta:
         model = Car
         fields = ["car_type", "color"]
+
+
+class ClientForm(forms.ModelForm):
+    class Meta:
+        model = Client
+        fields = ["name", "email", "phone"]

@@ -1,0 +1,15 @@
+{%  extends "store/base.html"  %}
+
+{%  block title  %} Order {%  endblock  %}
+
+{%  block context  %}
+<form action="POST">
+    <p>{{  order_id  }}</p>
+    <p>{{  order_info  }}</p>
+    <hr>
+    <p>{{  form_client.as_p  }}</p>
+
+    <input type="submit" name="cancel" value="Отмена">
+    <input type="submit" value="Оплата">
+</form>
+{%  endblock  %}
