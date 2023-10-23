@@ -3,13 +3,50 @@
 {%  block title  %} Order {%  endblock  %}
 
 {%  block context  %}
-<form action="POST">
-    <p>{{  order_id  }}</p>
-    <p>{{  order_info  }}</p>
-    <hr>
-    <p>{{  form_client.as_p  }}</p>
+<style>
+body {
+    background: #B5C9FF;
+}
+.order {
+    background: #DAE1F5;
+    white-space: normal;
+    width: 70%;
+    flex-direction: column;
+    vertical-align: top;
+    border: 1px dotted #939;
+    flex: 0 0 calc(25% - 30px);
+    padding-left: 38px;
+    padding-bottom: 20px;
+    margin: 30px;
+}
+.info_form {
+    background: #DAE1F5;
+    white-space: normal;
+    width: 70%;
+    vertical-align: top;
+    border: 1px dotted #939;
+    flex: 0 0 calc(25% - 30px);
+    padding-left: 38px;
+    padding-bottom: 20px;
+    margin: 30px;
+}
+.input_button {
+    margin-top: 25px;
+    background: #DAE1F5;
+    padding: 2px 1em 0 1em;
+}
+</style>
 
-    <input type="submit" name="cancel" value="Отмена">
-    <input type="submit" value="Оплата">
+<form method="POST">
+    <div class="order">
+        <p>{{  order_id  }}</p>
+        <p>{{  order_info  }}</p>
+    </div>
+    <hr>
+    <div class="info_form">{{  form_client.as_p  }}</div>
+    <input class="input_button" type="submit" value="Оплата">
+</form>
+<form method="GET">
+        <input class="input_button" type="submit" name="cancel" value="Отмена">
 </form>
 {%  endblock  %}
