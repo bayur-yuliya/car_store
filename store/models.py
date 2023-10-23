@@ -20,7 +20,7 @@ class CarType(models.Model):
 
 
 class Car(models.Model):
-    car_type = models.ForeignKey(CarType, on_delete=models.CASCADE)
+    car_type = models.ForeignKey(CarType, on_delete=models.PROTECT)
     color = models.CharField(max_length=50)
     year = models.IntegerField()
     blocked_by_order = models.ForeignKey(

@@ -3,7 +3,57 @@
 {%  block title  %}Car store{%  endblock  %}
 
 {%  block context  %}
-{{  form.as_p  }}
-<hr>
-<input type="submit" value="Оформление закза">
+<style>
+body {
+    background: #B5C9FF;
+}
+.title {
+    text-align: center;
+    margin: 35px;
+}
+.textcols {
+    background: #617DC7;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+}
+.column {
+    background: #DAE1F5;
+    white-space: normal;
+    width: 40%;
+    flex-direction: column;
+	flex-basis: 100%;
+    vertical-align: top;
+    border: 1px dotted #939;
+    flex: 0 0 calc(25% - 30px);
+    padding-left: 38px;
+    padding-bottom: 20px;
+    margin: 15px;
+}
+.input_button {
+    margin: 0 auto;
+    display: block;
+    margin-top: 25px;
+    background: #DAE1F5;
+    padding: 2px 1em 0 1em;
+}
+</style>
+
+<div class="title">
+<h1>Каталог машин</h1>
+</div>
+<form action="POST">
+<!--{{  form  }}-->
+    <div class="textcols">
+    {%  for el in all_cars  %}
+        <div class="column">
+            <p><h2>{{  el.car_type  }} - {{  el.color  }}  </h2></p>
+            <p>Цена: S {{  el.car_type.price  }}</p>
+            {{  el.cars_count.cars_count  }}
+        </div>
+    {%  endfor  %}
+    </div>
+    <input class="input_button" type="submit" value="Оформление закза">
+</form>
 {%  endblock  %}
