@@ -21,15 +21,15 @@ body {
 .column {
     background: #DAE1F5;
     white-space: normal;
-    width: 40%;
+    width: 50%;
     flex-direction: column;
 	flex-basis: 100%;
     vertical-align: top;
     border: 1px dotted #939;
-    flex: 0 0 calc(25% - 30px);
+    flex: 0 0 calc(25% - 5px);
     padding-left: 38px;
-    padding-bottom: 20px;
-    margin: 15px;
+    padding-bottom: 10px;
+    margin: 25px;
 }
 .input_button {
     margin: 0 auto;
@@ -43,15 +43,16 @@ body {
 <div class="title">
 <h1>Каталог машин</h1>
 </div>
-<form action="POST">
-<!--{{  form  }}-->
+<form method="POST">
+    {% csrf_token %}
     <div class="textcols">
     {%  for el in all_cars  %}
         <div class="column">
-            <p><h2>{{  el.car_type  }} - {{  el.color  }}  </h2></p>
-            <p>Цена: S {{  el.car_type.price  }}</p>
-            {{  el.cars_count.cars_count  }}
-        </div>
+                <p><h2>{{  el.car_type.brand  }}  {{  el.car_type  }} - {{  el.color  }}  </h2></p>
+                <p>Цена: S {{  el.car_type.price  }}</p>
+                <p></p>
+                <label>Выбрать<input class="input_button" type="submit" name='select' value='{{  el.car_type  }}'></label>
+         </div>
     {%  endfor  %}
     </div>
     <input class="input_button" type="submit" value="Оформление закза">
