@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from .forms import CarForm, ClientForm
-from .models import Car
+from .models import Car, Order, OrderQuantity, Dealership, Client, CarType
 
 
 def cars(request):
@@ -22,12 +22,23 @@ def cars(request):
         )
 
     form = CarForm(request.POST)
+    order = Order.objects.get_or_create(client=Client.objects.get(id=1), dealership=Dealership.objects.get(id=1))
+    print(order)
+    if request.POST.get("select"):
+
+        select = request.POST.get("select")
+
+        order_quantity = OrderQuantity.objects.create(car_type=CarType.objects.get(name=select),
+                                                      quantity=1,
+                                                      order=Order.objects.get(id=order[0].id))
+
+        return redirect(reverse("cars"))
 
     if form.is_valid():
         form.save()
-        order_id = form.id
 
-        return redirect(reverse("order", order_id))
+    order_id = order.id
+    return redirect(reverse("order", order_id))
 
 
 def order(request, order_id):

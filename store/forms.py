@@ -4,10 +4,8 @@ from .models import Car, Client
 
 
 class CarForm(forms.ModelForm):
-    color = forms.ModelMultipleChoiceField(
+    color = forms.ModelChoiceField(label="",
         queryset=Car.objects.all(),
-        required=False,
-        widget=forms.CheckboxSelectMultiple,
     )
     amount = forms.DecimalField()
 

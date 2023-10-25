@@ -45,7 +45,7 @@ class Car(models.Model):
         self.save()
 
     def __str__(self):
-        return self.color
+        return f'{self.car_type} -- {self.color}'
 
 
 class Licence(models.Model):
