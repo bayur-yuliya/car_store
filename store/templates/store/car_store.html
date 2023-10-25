@@ -11,6 +11,9 @@ body {
     text-align: center;
     margin: 35px;
 }
+h3 {
+    text-align: right;
+}
 .textcols {
     background: #617DC7;
     display: flex;
@@ -41,6 +44,9 @@ body {
 </style>
 
 <div class="title">
+    {%  if cart.cars_count %}
+    <h3>Корзина: {{  cart.cars_count  }}</h3>
+    {%  endif  %}
 <h1>Каталог машин</h1>
 </div>
 <form method="POST">

@@ -38,15 +38,20 @@ body {
 </style>
 
 <form method="POST">
+    {% csrf_token %}
     <div class="order">
-        <p>{{  order_id  }}</p>
-        <p>{{  order_info  }}</p>
+        <p>Заказ номер {{  order_id  }}</p>
+        <hr>
+        {%  for el in cars  %}
+            <p>{{  el.car_type  }} -- {{  el.quantity  }} -- {{  el.car_type.price  }}</p>
+        {%  endfor  %}
     </div>
     <hr>
-    <div class="info_form">{{  form_client.as_p  }}</div>
+
     <input class="input_button" type="submit" value="Оплата">
 </form>
 <form method="GET">
+        {% csrf_token %}
         <input class="input_button" type="submit" name="cancel" value="Отмена">
 </form>
 {%  endblock  %}
