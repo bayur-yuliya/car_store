@@ -7,7 +7,6 @@
 body {
     background: #B5C9FF;
 }
-
 div {
     background: #DAE1F5;
     border: 1px solid #939;
@@ -15,11 +14,20 @@ div {
     padding-bottom: 20px;
     margin: 30px;
 }
-
+.input_button {
+    margin: 0 auto;
+    display: block;
+    margin-top: 25px;
+    background: #DAE1F5;
+    padding: 2px 1em 0 1em;
+}
 </style>
-{% csrf_token %}
-<div>
-    <h3> Заказ {{  order_id  }}</h3>
-    <h1>Заказ оформлен, служба поддержки скоро свяжется с вами </h1>
-</div>
+<form method="GET">
+    {% csrf_token %}
+    <div>
+        <h3> Заказ {{  order_id  }}</h3>
+        <h1>Заказ оформлен, служба поддержки скоро свяжется с вами </h1>
+    </div>
+    <input class="input_button" type="submit" name="index_page" value="На главную страницу">
+</form>
 {%  endblock  %}

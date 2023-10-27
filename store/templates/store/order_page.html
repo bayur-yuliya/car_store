@@ -43,11 +43,10 @@ body {
         <p>Заказ номер {{  order_id  }}</p>
         <hr>
         {%  for el in cars  %}
-            <p>{{  el.car_type  }} -- {{  el.quantity  }} -- {{  el.car_type.price  }}</p>
+            <p>{{  el.car_type  }} -- {{  el.quantity  }}</p>
         {%  endfor  %}
     </div>
     <hr>
-
     <input class="input_button" type="submit" value="Оплата">
 </form>
 <form method="GET">

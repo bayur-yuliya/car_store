@@ -1,44 +1,81 @@
+import random
+
 from django.db.models import Count
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from .models import Car, Order, OrderQuantity, Dealership, Client, CarType
+from .models import Car, Order, OrderQuantity, Dealership, Client, Licence
 
 
 def cars(request):
-    order = Order.objects.get_or_create(client=Client.objects.get(id=1), dealership=Dealership.objects.get(id=1))
+    find_order = Order.objects.filter(
+        client=Client.objects.get(id=1),
+        dealership=Dealership.objects.get(id=1),
+        is_paid=False,
+    )
+
+    if find_order.exists():
+        order = Order.objects.get(
+            client=Client.objects.get(id=1),
+            dealership=Dealership.objects.get(id=1),
+            is_paid=False,
+        )
+    else:
+        order = Order.objects.create(
+            client=Client.objects.get(id=1),
+            dealership=Dealership.objects.get(id=1),
+            is_paid=False,
+        )
 
     if request.method == "GET":
-        all_cars = Car.objects.order_by("car_type")
-        cars_count = (
-            Car.objects.filter(blocked_by_order__isnull=True, owner__isnull=True)
-            .aggregate(cars_count=Count("*"))
-            .values()
+        all_cars = Car.objects.filter(owner__isnull=True)
+        blocked_cars = Car.objects.filter(
+            blocked_by_order__isnull=False, owner__isnull=True
         )
-        cart = OrderQuantity.objects.filter(order=Order.objects.get(id=order[0].id)).aggregate(cars_count=Count("*"))
+        cars_count = (
+            all_cars.values("car_type", "color").annotate(Count("id")).order_by()
+        )
+
+        cart = OrderQuantity.objects.filter(
+            order=Order.objects.get(id=order.id)
+        ).aggregate(cars_count=Count("*"))
+
         return render(
             request,
             "store/car_store.html",
-            context={"all_cars": all_cars, "cars_count": cars_count, 'cart': cart},
+            context={
+                "all_cars": all_cars,
+                "cars_count": cars_count,
+                "blocked_cars": blocked_cars,
+                "cart": cart,
+            },
         )
 
-    cars_id_list =[]
+    cars_id_list = []
 
     if request.POST.get("select"):
         select = request.POST.get("select")
-        OrderQuantity.objects.create(car_type=CarType.objects.get(name=select),
-                                                      quantity=1,
-                                                      order=Order.objects.get(id=order[0].id))
+        quantity = 1
 
-        car = CarType.objects.get(name=select)
-        cars_id_list.append(car.id)
+        order_quantity = OrderQuantity.objects.get_or_create(
+            car_type=Car.objects.get(id=int(select)).car_type,
+            quantity=quantity,
+            order=Order.objects.get(id=order.id),
+        )
+
+        if order_quantity[1] is False:
+            order_quantity[0].quantity = order_quantity[0].quantity + 1
+            order_quantity[0].save()
+
+        cars_id_list.append(int(select))
+
+        for el in cars_id_list:
+            Car.objects.get(id=el).block(order=Order.objects.get(id=order.id))
+
         return redirect(reverse("cars"))
 
-    for el in cars_id_list:
-        Car.objects.filter(id=el).block(order=Order.objects.get(id=order[0].id))
-
-    order_id = order[0].id
-    return redirect(reverse("order", kwargs={'order_id': order_id}))
+    order_id = order.id
+    return redirect(reverse("order", kwargs={"order_id": order_id}))
 
 
 def order(request, order_id):
@@ -50,16 +87,29 @@ def order(request, order_id):
         return redirect(reverse("cars"))
 
     if request.method == "POST":
-        return redirect(reverse("order_is_processed", kwargs={'order_id': order_id}))
+        for el in Car.objects.filter(blocked_by_order=order_created.id):
+            licence_number = random.randint(1000, 9999)
+
+            if Licence.objects.filter(number=f"BH {licence_number} IT").exists():
+                licence_number = random.randint(1000, 9999)
+            else:
+                Licence.objects.create(car=el, number=f"BH {licence_number} IT")
+
+            order_created.is_paid = True
+            order_created.save()
+            el.sell()
+        return redirect(reverse("order_is_processed", kwargs={"order_id": order_id}))
 
     data = {
         "order_id": order_id,
-        'cars': cars,
+        "cars": cars,
     }
     return render(request, "store/order_page.html", context=data)
 
 
 def order_is_processed(request, order_id):
+    if request.GET.get("index_page"):
+        return redirect(reverse("cars"))
 
     return render(
         request, "store/order_is_processed.html", context={"order_id": order_id}
