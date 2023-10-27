@@ -20,7 +20,7 @@ class CarType(models.Model):
 
 
 class Car(models.Model):
-    car_type = models.ForeignKey(CarType, on_delete=models.CASCADE)
+    car_type = models.ForeignKey(CarType, on_delete=models.PROTECT)
     color = models.CharField(max_length=50)
     year = models.IntegerField()
     blocked_by_order = models.ForeignKey(
@@ -45,7 +45,7 @@ class Car(models.Model):
         self.save()
 
     def __str__(self):
-        return self.color
+        return f"{self.car_type} -- {self.color}"
 
 
 class Licence(models.Model):

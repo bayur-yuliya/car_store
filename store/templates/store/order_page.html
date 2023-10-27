@@ -1,0 +1,56 @@
+{%  extends "store/base.html"  %}
+
+{%  block title  %} Order {%  endblock  %}
+
+{%  block context  %}
+<style>
+body {
+    background: #B5C9FF;
+}
+.order {
+    background: #DAE1F5;
+    white-space: normal;
+    width: 70%;
+    flex-direction: column;
+    vertical-align: top;
+    border: 1px dotted #939;
+    flex: 0 0 calc(25% - 30px);
+    padding-left: 38px;
+    padding-bottom: 20px;
+    margin: 30px;
+}
+.info_form {
+    background: #DAE1F5;
+    white-space: normal;
+    width: 70%;
+    vertical-align: top;
+    border: 1px dotted #939;
+    flex: 0 0 calc(25% - 30px);
+    padding-left: 38px;
+    padding-bottom: 20px;
+    margin: 30px;
+}
+.input_button {
+    margin-top: 25px;
+    background: #DAE1F5;
+    padding: 2px 1em 0 1em;
+}
+</style>
+
+<form method="POST">
+    {% csrf_token %}
+    <div class="order">
+        <p>Заказ номер {{  order_id  }}</p>
+        <hr>
+        {%  for el in cars  %}
+            <p>{{  el.car_type  }} -- {{  el.quantity  }}</p>
+        {%  endfor  %}
+    </div>
+    <hr>
+    <input class="input_button" type="submit" value="Оплата">
+</form>
+<form method="GET">
+        {% csrf_token %}
+        <input class="input_button" type="submit" name="cancel" value="Отмена">
+</form>
+{%  endblock  %}
