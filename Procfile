@@ -1,7 +1,7 @@
-web: gunicorn car_shop.wsgi:application --bind 0.0.0.0:$PORT
+web: gunicorn car_shop.wsgi
 
 # Uncomment this `release` process if you are using a database, so that Django's model
 # migrations are run as part of app deployment, using Heroku's Release Phase feature:
 # https://docs.djangoproject.com/en/4.2/topics/migrations/
 # https://devcenter.heroku.com/articles/release-phase
-# release: ./manage.py migrate --no-input
+#release: ./manage.py migrate --no-input
