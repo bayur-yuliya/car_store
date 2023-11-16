@@ -52,20 +52,22 @@ h3 {
 <form method="POST">
     {% csrf_token %}
     <div class="textcols">
-
-    {%  for el in all_cars  %}
-
-        <div class="column">
-            <p><h2>{{  el.car_type.brand  }}  {{  el.car_type  }} - {{  el.color  }}  </h2></p>
-            <p>Цена: ${{  el.car_type.price  }}</p>
-            <p></p>
-            {%  if el in blocked_cars  %}
-                <label>Выбрать<input class="input_button" type="submit" name='select' value='{{  el.id  }}' disabled></label>
-            {%  else  %}
-                <label>Выбрать<input class="input_button" type="submit" name='select' value='{{  el.id  }}'></label>
-            {%  endif  %}
-         </div>
-    {%  endfor  %}
+    {% if all_cars %}
+        {%  for el in all_cars  %}
+            <div class="column">
+                <p><h2>{{  el.car_type.brand  }}  {{  el.car_type  }} - {{  el.color  }}  </h2></p>
+                <p>Цена: ${{  el.car_type.price  }}</p>
+                <p></p>
+                {%  if el in blocked_cars  %}
+                    <label>Выбрать<input class="input_button" type="submit" name='select' value='{{  el.id  }}' disabled></label>
+                {%  else  %}
+                    <label>Выбрать<input class="input_button" type="submit" name='select' value='{{  el.id  }}'></label>
+                {%  endif  %}
+             </div>
+        {%  endfor  %}
+    {% else %}
+        No cars
+    {%  endif  %}
     </div>
     <input class="input_button" type="submit" value="Оформление закза">
 </form>
