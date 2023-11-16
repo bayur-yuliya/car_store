@@ -8,16 +8,7 @@ from .models import Car, Order, OrderQuantity, Dealership, Client, Licence, CarT
 
 
 def cars(request):
-    CarType.objects.create(name='M135i xDrive', brand='BMW', price=200)
-    CarType.objects.create(name='X7 M60i xDRIVE', brand='BMW', price=100)
-    CarType.objects.create(name='XM LABEL RED', brand='BMW', price=150)
-    Car.objects.create(car_type=CarType(id=1), color='red', year=2023)
-    Car.objects.create(car_type=CarType(id=2), color='red', year=2023)
-    Car.objects.create(car_type=CarType(id=3), color='red', year=2023)
-    Car.objects.create(car_type=CarType(id=1), color='black', year=2023)
-    Car.objects.create(car_type=CarType(id=2), color='black', year=2023)
-    Car.objects.create(car_type=CarType(id=3), color='black', year=2023)
-    
+
     find_order = Order.objects.filter(
         client=Client.objects.get(id=1),
         dealership=Dealership.objects.get(id=1),
