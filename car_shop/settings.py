@@ -193,3 +193,19 @@ WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+LOGIN_REDIRECT_URL = "/"
+LOGIN_URL = "/login/"
+
+# Email settingsos.getenv("SENDGRID_API_KEY")
+SENDGRID_API_KEY = (
+    "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"
+)
+EMAIL_HOST = "smtp.sendgrid.net"
+EMAIL_HOST_USER = "apikey"  # this is exactly the value 'apikey'
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = "juliy14497@outlook.com"
+
+# send_mail( "Subject here", "Here is the message.", "juliy14497@outlook.com", ["juliy14497@gmail.com"], fail_silently=False)
+# send_mail( "Subject here", "Here is the message.", "juliy14497@outlook.com", ["juliy14497@outlook.com"], fail_silently=False)

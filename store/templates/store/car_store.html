@@ -44,9 +44,7 @@ h3 {
 </style>
 
 <div class="title">
-    {%  if cart.cars_count %}
-    <h3>Корзина: {{  cart.cars_count  }}</h3>
-    {%  endif  %}
+    <a href="{% url 'register' %}">Регистрация</a> | <a href="{% url 'login' %}">Авторизация</a>
 <h1>Каталог машин</h1>
 </div>
 <form method="POST">
