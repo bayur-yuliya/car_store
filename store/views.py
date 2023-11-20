@@ -1,32 +1,67 @@
 import random
 
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.core.signing import Signer, BadSignature
 from django.db.models import Count
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
+from .forms import RegisterUserForm
 from .models import Car, Order, OrderQuantity, Dealership, Client, Licence
 
 
+<<<<<<< HEAD
+def send_activation_email(request, user: User):
+    user_signed = Signer().sign(user.id)
+    signed_url = request.build_absolute_uri(f"/activate/{user_signed}")
+    send_mail(
+        "Registration complete",
+        "Click here to activate your account: " + signed_url,
+        "juliy14497@outlook.com",
+        [user.email],
+        fail_silently=False,
+=======
 def cars(request):
+
     find_order = Order.objects.filter(
         client=Client.objects.get(id=1),
         dealership=Dealership.objects.get(id=1),
         is_paid=False,
+>>>>>>> adc492fe604cc5d45cbcfc2fbc7521a903d24016
     )
 
-    if find_order.exists():
-        order = Order.objects.get(
-            client=Client.objects.get(id=1),
-            dealership=Dealership.objects.get(id=1),
-            is_paid=False,
-        )
-    else:
-        order = Order.objects.create(
-            client=Client.objects.get(id=1),
-            dealership=Dealership.objects.get(id=1),
-            is_paid=False,
-        )
 
+def activate(request, user_signed):
+    try:
+        user_id = Signer().unsign(user_signed)
+    except BadSignature:
+        return redirect("login")
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return redirect("login")
+    user.is_active = True
+    user.save()
+    return redirect("login")
+
+
+def register(request):
+    if request.method == "GET":
+        form = RegisterUserForm()
+        return render(request, "store/register.html", {"form": form})
+
+    form = RegisterUserForm(request.POST)
+    if form.is_valid():
+        form.instance.is_active = False
+        form.save()
+        send_activation_email(request, form.instance)
+        return HttpResponse("Отправили на почту подтверждение регистрации")
+    return render(request, "store/register.html", {"form": form})
+
+
+def cars(request):
     if request.method == "GET":
         all_cars = Car.objects.filter(owner__isnull=True)
         blocked_cars = Car.objects.filter(
@@ -36,10 +71,6 @@ def cars(request):
             all_cars.values("car_type", "color").annotate(Count("id")).order_by()
         )
 
-        cart = OrderQuantity.objects.filter(
-            order=Order.objects.get(id=order.id)
-        ).aggregate(cars_count=Count("*"))
-
         return render(
             request,
             "store/car_store.html",
@@ -47,8 +78,32 @@ def cars(request):
                 "all_cars": all_cars,
                 "cars_count": cars_count,
                 "blocked_cars": blocked_cars,
-                "cart": cart,
             },
+        )
+    try:
+        client, existence = Client.objects.get_or_create(
+            name=request.user.username, email=request.user.email, phone="0387410203"
+        )
+    except AttributeError:
+        return redirect("register")
+
+    find_order = Order.objects.filter(
+        client=client,
+        dealership=Dealership.objects.get(id=1),
+        is_paid=False,
+    )
+
+    if find_order.exists():
+        order = Order.objects.get(
+            client=client,
+            dealership=Dealership.objects.get(id=1),
+            is_paid=False,
+        )
+    else:
+        order = Order.objects.create(
+            client=client,
+            dealership=Dealership.objects.get(id=1),
+            is_paid=False,
         )
 
     cars_id_list = []
@@ -56,7 +111,6 @@ def cars(request):
     if request.POST.get("select"):
         select = request.POST.get("select")
         quantity = 1
-
         order_quantity = OrderQuantity.objects.get_or_create(
             car_type=Car.objects.get(id=int(select)).car_type,
             quantity=quantity,
@@ -92,7 +146,6 @@ def order(request, order_id):
 
             if Licence.objects.filter(number=f"BH {licence_number} IT").exists():
                 licence_number = random.randint(1000, 9999)
-            else:
                 Licence.objects.create(car=el, number=f"BH {licence_number} IT")
 
             order_created.is_paid = True
