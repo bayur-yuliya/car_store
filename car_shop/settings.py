@@ -196,7 +196,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_REDIRECT_URL = "/"
 LOGIN_URL = "/login/"
 
-# Email settingsos.getenv("SENDGRID_API_KEY")
+# Email settings
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 EMAIL_HOST = "smtp.sendgrid.net"
 EMAIL_HOST_USER = "apikey"  # this is exactly the value 'apikey'
