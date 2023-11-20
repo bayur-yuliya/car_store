@@ -9,10 +9,9 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from .forms import RegisterUserForm
-from .models import Car, Order, OrderQuantity, Dealership, Client, Licence
+from .models import Car, Order, OrderQuantity, Dealership, Client, Licence, CarType
 
 
-<<<<<<< HEAD
 def send_activation_email(request, user: User):
     user_signed = Signer().sign(user.id)
     signed_url = request.build_absolute_uri(f"/activate/{user_signed}")
@@ -21,16 +20,7 @@ def send_activation_email(request, user: User):
         "Click here to activate your account: " + signed_url,
         "juliy14497@outlook.com",
         [user.email],
-        fail_silently=False,
-=======
-def cars(request):
-
-    find_order = Order.objects.filter(
-        client=Client.objects.get(id=1),
-        dealership=Dealership.objects.get(id=1),
-        is_paid=False,
->>>>>>> adc492fe604cc5d45cbcfc2fbc7521a903d24016
-    )
+        fail_silently=False,)
 
 
 def activate(request, user_signed):
@@ -62,6 +52,24 @@ def register(request):
 
 
 def cars(request):
+    CarType.objects.create(name='M135i xDrive', brand='BMW', price=200)
+    CarType.objects.create(name='X7 M60i xDRIVE', brand='BMW', price=100)
+    CarType.objects.create(name='XM LABEL RED', brand='BMW', price=150)
+    Car.objects.create(car_type=CarType(id=1), color='red', year=2023)
+    Car.objects.create(car_type=CarType(id=2), color='red', year=2023)
+    Car.objects.create(car_type=CarType(id=3), color='red', year=2023)
+    Car.objects.create(car_type=CarType(id=1), color='black', year=2023)
+    Car.objects.create(car_type=CarType(id=2), color='black', year=2023)
+    Car.objects.create(car_type=CarType(id=3), color='black', year=2023)
+    Client.objects.create(name='Tonya', email="test@gmail.com", phone='0387410203')
+    Dealership.objects.create(name='OdessaBMW')
+    my_instance = Dealership.objects.get(pk=1)
+
+    my_instance.available_car_types.set([CarType.objects.get(id=1)])
+    my_instance.clients.set([Client.objects.get(id=1)])
+
+
+
     if request.method == "GET":
         all_cars = Car.objects.filter(owner__isnull=True)
         blocked_cars = Car.objects.filter(
