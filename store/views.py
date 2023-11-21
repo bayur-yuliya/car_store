@@ -12,6 +12,7 @@ from .forms import RegisterUserForm
 from .models import Car, Order, OrderQuantity, Dealership, Client, Licence
 
 
+<<<<<<< HEAD
 def send_activation_email(request, user: User):
     user_signed = Signer().sign(user.id)
     signed_url = request.build_absolute_uri(f"/activate/{user_signed}")
@@ -20,8 +21,16 @@ def send_activation_email(request, user: User):
         "Click here to activate your account: " + signed_url,
         "juliy14497@outlook.com",
         [user.email],
-        fail_silently=False,)
+        fail_silently=False,
+=======
+def cars(request):
 
+    find_order = Order.objects.filter(
+        client=Client.objects.get(id=1),
+        dealership=Dealership.objects.get(id=1),
+        is_paid=False,
+>>>>>>> adc492fe604cc5d45cbcfc2fbc7521a903d24016
+    )
 
 def activate(request, user_signed):
     try:
@@ -158,4 +167,3 @@ def order_is_processed(request, order_id):
     return render(
         request, "store/order_is_processed.html", context={"order_id": order_id}
     )
-
