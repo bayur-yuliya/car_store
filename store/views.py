@@ -158,3 +158,4 @@ def order_is_processed(request, order_id):
     return render(
         request, "store/order_is_processed.html", context={"order_id": order_id}
     )
+
