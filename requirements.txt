@@ -32,3 +32,15 @@ whitenoise[brotli]>=6.0,<7.0
 # speed up installation and avoid errors from missing libraries/headers.
 psycopg[c]; sys_platform == "linux"
 psycopg[binary]; sys_platform != "linux"
+
+django-allauth==0.58.2
+django-storages==1.14.2
+boto3==1.33.6
+botocore==1.33.6
+jmespath==1.0.1
+python-dateutil==2.8.2
+s3transfer==0.8.2
+six==1.16.0
+urllib3==2.0.7
+Pillow==10.1.0
+qrcode==7.4.2
