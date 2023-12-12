@@ -1,31 +1,14 @@
 import random
 
 from django.db.models import Count
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
+from .forms import CarPhotoChange
 from .models import Car, Order, OrderQuantity, Dealership, Client, Licence
 
 
 def cars(request):
-    find_order = Order.objects.filter(
-        client=Client.objects.get(id=1),
-        dealership=Dealership.objects.get(id=1),
-        is_paid=False,
-    )
-
-    if find_order.exists():
-        order = Order.objects.get(
-            client=Client.objects.get(id=1),
-            dealership=Dealership.objects.get(id=1),
-            is_paid=False,
-        )
-    else:
-        order = Order.objects.create(
-            client=Client.objects.get(id=1),
-            dealership=Dealership.objects.get(id=1),
-            is_paid=False,
-        )
 
     if request.method == "GET":
         all_cars = Car.objects.filter(owner__isnull=True)
@@ -36,10 +19,6 @@ def cars(request):
             all_cars.values("car_type", "color").annotate(Count("id")).order_by()
         )
 
-        cart = OrderQuantity.objects.filter(
-            order=Order.objects.get(id=order.id)
-        ).aggregate(cars_count=Count("*"))
-
         return render(
             request,
             "store/car_store.html",
@@ -47,8 +26,32 @@ def cars(request):
                 "all_cars": all_cars,
                 "cars_count": cars_count,
                 "blocked_cars": blocked_cars,
-                "cart": cart,
             },
+        )
+    try:
+        client, existence = Client.objects.get_or_create(
+            name=request.user.username, email=request.user.email, phone="0387410203"
+        )
+    except AttributeError:
+        return redirect("register")
+
+    find_order = Order.objects.filter(
+        client=client,
+        dealership=Dealership.objects.get(id=1),
+        is_paid=False,
+    )
+
+    if find_order.exists():
+        order = Order.objects.get(
+            client=client,
+            dealership=Dealership.objects.get(id=1),
+            is_paid=False,
+        )
+    else:
+        order = Order.objects.create(
+            client=client,
+            dealership=Dealership.objects.get(id=1),
+            is_paid=False,
         )
 
     cars_id_list = []
@@ -56,7 +59,6 @@ def cars(request):
     if request.POST.get("select"):
         select = request.POST.get("select")
         quantity = 1
-
         order_quantity = OrderQuantity.objects.get_or_create(
             car_type=Car.objects.get(id=int(select)).car_type,
             quantity=quantity,
@@ -78,6 +80,20 @@ def cars(request):
     return redirect(reverse("order", kwargs={"order_id": order_id}))
 
 
+def update_car(request, car_id):
+    car = get_object_or_404(Car, id=car_id)
+    if request.method == "GET":
+        form = CarPhotoChange(request.FILES, instance=car)
+        return render(request, "store/update_car.html", {'car': car, 'form': form})
+
+    form = CarPhotoChange(request.POST, request.FILES, instance=car)
+    if form.is_valid:
+        car.photo = form['photo']
+        print(form['photo'])
+        form.save()
+
+    return redirect(reverse("cars"))
+
 def order(request, order_id):
     order_created = Order.objects.get(id=order_id)
     cars = OrderQuantity.objects.filter(order=order_created).all()
@@ -89,11 +105,9 @@ def order(request, order_id):
     if request.method == "POST":
         for el in Car.objects.filter(blocked_by_order=order_created.id):
             licence_number = random.randint(1000, 9999)
-
             if Licence.objects.filter(number=f"BH {licence_number} IT").exists():
                 licence_number = random.randint(1000, 9999)
-            else:
-                Licence.objects.create(car=el, number=f"BH {licence_number} IT")
+            Licence.objects.create(car=el, number=f"BH {licence_number} IT")
 
             order_created.is_paid = True
             order_created.save()

@@ -31,7 +31,6 @@ h3 {
     border: 1px dotted #939;
     flex: 0 0 calc(25% - 5px);
     padding-left: 38px;
-    padding-bottom: 10px;
     margin: 25px;
 }
 .input_button {
@@ -44,28 +43,32 @@ h3 {
 </style>
 
 <div class="title">
-    {%  if cart.cars_count %}
-    <h3>Корзина: {{  cart.cars_count  }}</h3>
-    {%  endif  %}
+    <a href="{%  url 'account_signup'  %}">Регистрация</a>  |
+    <a href="{%  url 'account_login'  %}">Войти</a>  |
+    <a href="{%  url 'account_logout'  %}">Выйти</a>
 <h1>Каталог машин</h1>
 </div>
 <form method="POST">
     {% csrf_token %}
     <div class="textcols">
+    {% if all_cars %}
+        {%  for el in all_cars  %}
+            <div class="column">
+                <img style="float: right;" class="img-car" src="{{ el.photo.url }}" width="auto" height="230px" >
+                <p>{{  el.car_type.brand  }}  <h2><a href="{%  url 'update_car' el.id %}">{{  el.car_type  }}</a> - {{  el.color  }}  </h2></p>
 
-    {%  for el in all_cars  %}
-
-        <div class="column">
-            <p><h2>{{  el.car_type.brand  }}  {{  el.car_type  }} - {{  el.color  }}  </h2></p>
-            <p>Цена: ${{  el.car_type.price  }}</p>
-            <p></p>
-            {%  if el in blocked_cars  %}
-                <label>Выбрать<input class="input_button" type="submit" name='select' value='{{  el.id  }}' disabled></label>
-            {%  else  %}
-                <label>Выбрать<input class="input_button" type="submit" name='select' value='{{  el.id  }}'></label>
-            {%  endif  %}
-         </div>
-    {%  endfor  %}
+                <p>Цена: ${{  el.car_type.price  }}</p>
+                <p></p>
+                {%  if el in blocked_cars  %}
+                    <label>Выбрать<input class="input_button" type="submit" name='select' value='{{  el.id  }}' disabled></label>
+                {%  else  %}
+                    <label>Выбрать<input class="input_button" type="submit" name='select' value='{{  el.id  }}'></label>
+                {%  endif  %}
+             </div>
+        {%  endfor  %}
+    {% else %}
+        No cars
+    {%  endif  %}
     </div>
     <input class="input_button" type="submit" value="Оформление закза">
 </form>

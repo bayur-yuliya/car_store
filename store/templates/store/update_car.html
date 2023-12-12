@@ -1,0 +1,25 @@
+{%  extends "store/base.html"  %}
+
+{%  block title  %}Update car{%  endblock  %}
+
+{%  block context  %}
+<style>
+body {
+    background: #B5C9FF;
+}
+
+</style>
+<form method="POST">
+    {% csrf_token %}
+    <h1>
+    {{car.car_type.brand}}  -
+    {{car.car_type}} <br>
+    </h1>
+    {{car.color}} <br>
+    {{car.year}} <br>
+    <img class="img-car" src="{{ car.photo.url }}" width="auto" height="230px" >  <br>
+    {{form.as_p}}
+    <input type="submit" value="Обновить картинку">
+</form>
+
+{%  endblock  %}
