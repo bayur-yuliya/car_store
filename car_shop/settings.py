@@ -66,10 +66,10 @@ INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     # The Django apps are required for allauth:
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -107,7 +107,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 # `allauth` needs this from django
-                'django.template.context_processors.request',
+                "django.template.context_processors.request",
             ],
         },
     },
@@ -184,9 +184,15 @@ USE_TZ = True
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATIC_URL = "static/"
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 STORAGES = {
     # Enable WhiteNoise's GZip and Brotli compression of static assets:
     # https://whitenoise.readthedocs.io/en/latest/django.html#add-compression-and-caching-support
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
@@ -229,7 +235,11 @@ SOCIALACCOUNT_PROVIDERS = {
         # For each OAuth based provider, either add a ``SocialApp``
         # (``socialaccount`` app) containing the required client
         # credentials, or list them here:
-        "APP": {"client_id": GOOGLE_CLIENT_ID, "secret": GOOGLE_CLIENT_SECRET, "key": ""},
+        "APP": {
+            "client_id": '978776386041-n1tip0jp2mtb7math4iinptfuqlksso4.apps.googleusercontent.com',
+            "secret": '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',
+            "key": "",
+        },
         "SCOPE": [
             "profile",
             "email",
