@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
 from .forms import CarPhotoChangeForm
-from .models import Car, Order, OrderQuantity, Dealership, Client, Licence, CarType
+from .models import Car, Order, OrderQuantity, Dealership, Client, Licence
 
 
 def cars(request):
