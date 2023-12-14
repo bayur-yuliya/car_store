@@ -4,7 +4,7 @@ from django.db.models import Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
-from .forms import CarPhotoChange
+from .forms import CarPhotoChangeForm
 from .models import Car, Order, OrderQuantity, Dealership, Client, Licence
 
 
@@ -33,7 +33,7 @@ def cars(request):
             name=request.user.username, email=request.user.email, phone="0387410203"
         )
     except AttributeError:
-        return redirect("register")
+        return redirect("account_login")
 
     find_order = Order.objects.filter(
         client=client,
@@ -83,16 +83,14 @@ def cars(request):
 def update_car(request, car_id):
     car = get_object_or_404(Car, id=car_id)
     if request.method == "GET":
-        form = CarPhotoChange(request.FILES, instance=car)
+        form = CarPhotoChangeForm(instance=car)
         return render(request, "store/update_car.html", {'car': car, 'form': form})
 
-    form = CarPhotoChange(request.POST, request.FILES, instance=car)
-    if form.is_valid:
-        car.photo = form['photo']
-        print(form['photo'])
+    form = CarPhotoChangeForm(request.POST, request.FILES, instance=car)
+    if form.is_valid():
         form.save()
+    return redirect(reverse("update_car", kwargs={'car_id': car_id}))
 
-    return redirect(reverse("cars"))
 
 def order(request, order_id):
     order_created = Order.objects.get(id=order_id)

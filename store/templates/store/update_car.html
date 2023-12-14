@@ -9,17 +9,22 @@ body {
 }
 
 </style>
-<form method="POST">
+
+<a href="{%  url 'cars'  %}">Главная страница</a>
+<img style="float: right;" class="img-car" src="{{ car.photo.url }}" width="700px" height="auto" >  <br>
+<h1>
+{{car.car_type.brand}}  -
+{{car.car_type}}
+</h1>
+{{car.year}} <br>
+
+<br><br><br>
+<form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    <h1>
-    {{car.car_type.brand}}  -
-    {{car.car_type}} <br>
-    </h1>
-    {{car.color}} <br>
-    {{car.year}} <br>
-    <img class="img-car" src="{{ car.photo.url }}" width="auto" height="230px" >  <br>
-    {{form.as_p}}
-    <input type="submit" value="Обновить картинку">
+    {{  form.as_p  }}
+    <p><button type="submit" >Обновить картинку</button></p>
 </form>
+
+
 
 {%  endblock  %}

@@ -48,7 +48,7 @@ h3 {
     <a href="{%  url 'account_logout'  %}">Выйти</a>
 <h1>Каталог машин</h1>
 </div>
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="textcols">
     {% if all_cars %}
@@ -70,6 +70,6 @@ h3 {
         No cars
     {%  endif  %}
     </div>
-    <input class="input_button" type="submit" value="Оформление закза">
+    <input class="input_button" type="submit" value="Оформление заказ">
 </form>
 {%  endblock  %}

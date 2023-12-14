@@ -10,7 +10,6 @@ defusedxml==0.7.1
 dj-config-url==0.1.1
 dj-database-url==2.1.0
 Django==4.2.6
-django-allauth==0.58.2
 gunicorn==21.2.0
 idna==3.6
 mypy-extensions==1.0.0
@@ -32,7 +31,6 @@ sqlparse==0.4.4
 tomli==2.0.1
 typing_extensions==4.8.0
 tzdata==2023.3
-urllib3==2.1.0
 whitenoise==6.6.0
 
 # Uncomment these lines to use a Postgres database. Both are needed, since in production
@@ -42,3 +40,13 @@ whitenoise==6.6.0
 # speed up installation and avoid errors from missing libraries/headers.
 psycopg[c]; sys_platform == "linux"
 psycopg[binary]; sys_platform != "linux"
+
+django-allauth==0.58.2
+django-storages==1.14.2
+python-dateutil==2.8.2
+urllib3==1.26.18
+jmespath==1.0.1
+boto3==1.34.0
+botocore==1.34.0
+s3transfer==0.9.0
+six==1.16.0
