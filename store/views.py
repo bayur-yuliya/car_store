@@ -1,54 +1,11 @@
 import random
 
-from django.contrib.auth.models import User
-from django.core.mail import send_mail
-from django.core.signing import Signer, BadSignature
 from django.db.models import Count
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
-from .forms import RegisterUserForm
+from .forms import CarPhotoChangeForm
 from .models import Car, Order, OrderQuantity, Dealership, Client, Licence
-
-
-def send_activation_email(request, user: User):
-    user_signed = Signer().sign(user.id)
-    signed_url = request.build_absolute_uri(f"/activate/{user_signed}")
-    send_mail(
-        "Registration complete",
-        "Click here to activate your account: " + signed_url,
-        "juliy14497@outlook.com",
-        [user.email],
-        fail_silently=False,)
-
-
-def activate(request, user_signed):
-    try:
-        user_id = Signer().unsign(user_signed)
-    except BadSignature:
-        return redirect("login")
-    try:
-        user = User.objects.get(id=user_id)
-    except User.DoesNotExist:
-        return redirect("login")
-    user.is_active = True
-    user.save()
-    return redirect("login")
-
-
-def register(request):
-    if request.method == "GET":
-        form = RegisterUserForm()
-        return render(request, "store/register.html", {"form": form})
-
-    form = RegisterUserForm(request.POST)
-    if form.is_valid():
-        form.instance.is_active = False
-        form.save()
-        send_activation_email(request, form.instance)
-        return HttpResponse("Отправили на почту подтверждение регистрации")
-    return render(request, "store/register.html", {"form": form})
 
 
 def cars(request):
@@ -76,7 +33,7 @@ def cars(request):
             name=request.user.username, email=request.user.email, phone="0387410203"
         )
     except AttributeError:
-        return redirect("register")
+        return redirect("account_login")
 
     find_order = Order.objects.filter(
         client=client,
@@ -123,6 +80,18 @@ def cars(request):
     return redirect(reverse("order", kwargs={"order_id": order_id}))
 
 
+def update_car(request, car_id):
+    car = get_object_or_404(Car, id=car_id)
+    if request.method == "GET":
+        form = CarPhotoChangeForm(instance=car)
+        return render(request, "store/update_car.html", {'car': car, 'form': form})
+
+    form = CarPhotoChangeForm(request.POST, request.FILES, instance=car)
+    if form.is_valid():
+        form.save()
+    return redirect(reverse("update_car", kwargs={'car_id': car_id}))
+
+
 def order(request, order_id):
     order_created = Order.objects.get(id=order_id)
     cars = OrderQuantity.objects.filter(order=order_created).all()
@@ -134,10 +103,9 @@ def order(request, order_id):
     if request.method == "POST":
         for el in Car.objects.filter(blocked_by_order=order_created.id):
             licence_number = random.randint(1000, 9999)
-
             if Licence.objects.filter(number=f"BH {licence_number} IT").exists():
                 licence_number = random.randint(1000, 9999)
-                Licence.objects.create(car=el, number=f"BH {licence_number} IT")
+            Licence.objects.create(car=el, number=f"BH {licence_number} IT")
 
             order_created.is_paid = True
             order_created.save()
