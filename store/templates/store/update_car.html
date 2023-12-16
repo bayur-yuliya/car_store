@@ -1,0 +1,30 @@
+{%  extends "store/base.html"  %}
+
+{%  block title  %}Update car{%  endblock  %}
+
+{%  block context  %}
+<style>
+body {
+    background: #B5C9FF;
+}
+
+</style>
+
+<a href="{%  url 'cars'  %}">Главная страница</a>
+<img style="float: right;" class="img-car" src="{{ car.photo.url }}" width="700px" height="auto" >  <br>
+<h1>
+{{car.car_type.brand}}  -
+{{car.car_type}}
+</h1>
+{{car.year}} <br>
+
+<br><br><br>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{  form.as_p  }}
+    <p><button type="submit" >Обновить картинку</button></p>
+</form>
+
+
+
+{%  endblock  %}
