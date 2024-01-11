@@ -23,7 +23,11 @@ class Car(models.Model):
     car_type = models.ForeignKey(CarType, on_delete=models.PROTECT)
     color = models.CharField(max_length=50)
     year = models.IntegerField()
-    photo = models.ImageField(upload_to='photo/', blank=True, default='default_img/2c8802a0c5f948deddea67614d2ecb63.jpg')
+    photo = models.ImageField(
+        upload_to="photo/",
+        blank=True,
+        default="default_img/2c8802a0c5f948deddea67614d2ecb63.jpg",
+    )
     blocked_by_order = models.ForeignKey(
         "Order", on_delete=models.SET_NULL, null=True, related_name="reserved_cars"
     )
