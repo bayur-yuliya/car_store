@@ -1,9 +1,12 @@
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from rest_framework import generics, status, viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
+from api_store.invoices import verify_signature, create_invoice
 from api_store.serializers import (
     CarTypeSerializer,
     CarSerializer,
@@ -51,10 +54,8 @@ class OrderView(
             order=order, car_type=car_type
         )
         car.block(order)
-
-        return Response(
-            {"message": "Car added to order"}, status=status.HTTP_201_CREATED
-        )
+        create_invoice(order, reverse("webhook-mono"))
+        return Response({"invoice_url": order.invoice_url})
 
     def delete(self, request, *args, **kwargs):
         order = self.get_object()
@@ -65,3 +66,18 @@ class OrderView(
         order.delete()
 
         return Response({"message": "The order was successfully deleted"})
+
+
+class MonoAcquiringWebhookReceiver(APIView):
+    def post(self, request):
+        try:
+            verify_signature(request)
+        except Exception as e:
+            return Response({"status": "error"}, status=400)
+        reference = request.data.get("reference")
+        order = Order.objects.get(id=reference)
+        if order.order_id != request.data.get("invoiceId"):
+            return Response({"status": "error"}, status=400)
+        order.status = request.data.get("status", "error")
+        order.save()
+        return Response({"status": "ok"})
