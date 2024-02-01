@@ -54,7 +54,8 @@ def create_invoice(order, webhook_url, redirect_url):
         return OrderInvoice.objects.filter(orders__in=order).first().invoice_url
 
     order_invoice = OrderInvoice.objects.create()
-
+    order_invoice.orders.add(order)
+    
     amount = 0
     basket_order = []
 
