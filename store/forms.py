@@ -7,6 +7,7 @@ from store.models import Car
 
 
 class RegisterUserForm(SignupForm, UserCreationForm):
+
     username = forms.CharField(label="Username", required=True)
     email = forms.EmailField(label="Email address", required=True)
     password1 = forms.CharField(label="Password", required=True)
@@ -26,8 +27,9 @@ class RegisterUserForm(SignupForm, UserCreationForm):
 
 
 class CarPhotoChangeForm(forms.ModelForm):
-    photo = forms.ImageField(label="Выберите картинку: ", widget=forms.FileInput)
+
+    photo = forms.ImageField(label = 'Выберите картинку: ',widget=forms.FileInput)
 
     class Meta:
         model = Car
-        fields = ("photo",)
+        fields = ('photo',)
