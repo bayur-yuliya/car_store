@@ -11,6 +11,12 @@ paths:
       summary: Get a list of cars
       tags:
         - Cars
+      parameters:
+        - in: query
+          name: year
+          schema:
+            type: integer
+          description: Year of manufacture of the car
       responses:
         '200':
           description: A successful response
@@ -137,11 +143,17 @@ paths:
             application/json:
               example:
                 message: "Not found"
-  /car-types:
+  /api/car-types:
     get:
       summary: Get car types
       tags:
         - Car types
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: integer
+          description: Name of the car
       responses:
         '200':
           description: A successful response
@@ -181,6 +193,26 @@ paths:
             application/json:
               example:
                 message: "Request body must be JSON or fields are required"
+  /api/dealership:
+    get:
+      summary: Get list of dealerships
+      tags:
+        - Dealership
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: integer
+          description: Name of the dealership
+      responses:
+        '200':
+          description: A successful response
+          content:
+            application/json:
+              example:
+                - id: 1
+                  name: Test
+                  available_car_types: 1
   /api/order/{pk}:
     get:
       summary: Get order

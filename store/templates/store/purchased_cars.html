@@ -1,0 +1,35 @@
+{%  extends "store/base.html"  %}
+
+{%  block title  %} Car list {%  endblock  %}
+
+{%  block context  %}
+<style>
+body {
+    background: #B5C9FF;
+}
+div {
+    background: #DAE1F5;
+    border: 1px solid #939;
+    padding-left: 38px;
+    padding-bottom: 20px;
+    margin: 30px;
+}
+.input_button {
+    margin: 0 auto;
+    display: block;
+    margin-top: 25px;
+    background: #DAE1F5;
+    padding: 2px 1em 0 1em;
+}
+</style>
+<form method="GET">
+    {% csrf_token %}
+    <div>
+        <h3>Приобретенные машины</h3>
+        {%  for el in cars_list  %}
+            {{el.id}}. {{el.car_type.name}} {{el.car_type.brand}} {{el.color}} <br>
+        {%  endfor  %}
+    </div>
+    <input class="input_button" type="submit" name="index_page" value="На главную страницу">
+</form>
+{%  endblock  %}
