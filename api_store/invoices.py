@@ -67,20 +67,20 @@ def create_invoice(order, webhook_url, redirect_url):
     merchants_info = {
         "reference": str(order_invoice.id),
         "destination": "Покупка машины",
-        "basketOrder": basket_order
+        "basketOrder": basket_order,
     }
     request_body = {
         "amount": amount,
         "merchantPaymInfo": merchants_info,
         "redirectUrl": redirect_url,
-        "webHookUrl": webhook_url
+        "webHookUrl": webhook_url,
     }
     headers = {"X-Token": settings.MONOBANK_TOKEN}
 
     r = requests.post(
         "https://api.monobank.ua/api/merchant/invoice/create",
         headers=headers,
-        json=request_body
+        json=request_body,
     )
     r.raise_for_status()
     order_invoice.order_id = r.json()["invoiceId"]
