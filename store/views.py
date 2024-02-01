@@ -1,11 +1,10 @@
 import random
 
 from django.core.paginator import Paginator
-from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
-from api_store.invoices import create_invoice, verify_signature
+from api_store.invoices import create_invoice
 from .forms import CarPhotoChangeForm
 from .models import Car, Order, OrderQuantity, Dealership, Client, Licence
 
@@ -104,14 +103,10 @@ def order(request, order_id):
         return redirect(reverse("cars"))
 
     if request.method == "POST":
-        orders = Order.objects.get(
-            client=Client.objects.get(email=request.user.email)
-        )
-        full_url_webhook = request.build_absolute_uri(reverse("webhook-mono"))
-        full_url_orders = request.build_absolute_uri(
-            reverse("order_is_processed", kwargs={"order_id": order_id})
-        )
-
+        orders = Order.objects.get(client=Client.objects.get(email=request.user.email))
+        full_url_webhook = 'https://webhook.site/2f8f0a75-24c7-4907-ac1d-efeb1e58d1e8'
+        full_url_orders = f'https://sheltered-beach-61324-b8aaf597abf6.herokuapp.com/order_is_processed/{order_id}'
+        
         invoice_url = create_invoice(orders, full_url_webhook, full_url_orders)
 
         for el in Car.objects.filter(blocked_by_order=order_created.id):
