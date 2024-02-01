@@ -9,6 +9,7 @@ from .models import Car, Order, OrderQuantity, Dealership, Client, Licence
 
 
 def cars(request):
+
     if request.method == "GET":
         all_cars = Car.objects.filter(owner__isnull=True)
         blocked_cars = Car.objects.filter(
@@ -83,12 +84,12 @@ def update_car(request, car_id):
     car = get_object_or_404(Car, id=car_id)
     if request.method == "GET":
         form = CarPhotoChangeForm(instance=car)
-        return render(request, "store/update_car.html", {"car": car, "form": form})
+        return render(request, "store/update_car.html", {'car': car, 'form': form})
 
     form = CarPhotoChangeForm(request.POST, request.FILES, instance=car)
     if form.is_valid():
         form.save()
-    return redirect(reverse("update_car", kwargs={"car_id": car_id}))
+    return redirect(reverse("update_car", kwargs={'car_id': car_id}))
 
 
 def order(request, order_id):
