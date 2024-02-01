@@ -104,14 +104,14 @@ def order(request, order_id):
         return redirect(reverse("cars"))
 
     if request.method == "POST":
-        orders = Order.objects.filter(
+        orders = Order.objects.get(
             client=Client.objects.get(email=request.user.email)
         )
         full_url_webhook = request.build_absolute_uri(reverse("webhook-mono"))
         full_url_orders = request.build_absolute_uri(
             reverse("order_is_processed", kwargs={"order_id": order_id})
         )
-        # invoice_url = create_invoice(orders, full_url_webhook, full_url_orders)
+
         invoice_url = create_invoice(orders, full_url_webhook, full_url_orders)
 
         for el in Car.objects.filter(blocked_by_order=order_created.id):

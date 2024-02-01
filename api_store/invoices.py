@@ -50,17 +50,15 @@ def verify_signature(request):
 
 
 def create_invoice(order, webhook_url, redirect_url):
-    if OrderInvoice.objects.filter(orders__in=order).exists():
+    if OrderInvoice.objects.filter(orders=order).exists():
         return OrderInvoice.objects.filter(orders__in=order).first().invoice_url
 
     order_invoice = OrderInvoice.objects.create()
-    for el in order:
-        order_invoice.orders.add(el)
 
     amount = 0
     basket_order = []
 
-    for car in Car.objects.filter(owner__isnull=True, blocked_by_order__in=order).all():
+    for car in Car.objects.filter(owner__isnull=True, blocked_by_order=order).all():
         amount += car.car_type.price
         basket_order.append(
             {"name": car.car_type.name, "qty": 1, "sum": car.car_type.price * 100}
@@ -69,20 +67,20 @@ def create_invoice(order, webhook_url, redirect_url):
     merchants_info = {
         "reference": str(order_invoice.id),
         "destination": "Покупка машины",
-        "basketOrder": basket_order,
+        "basketOrder": basket_order
     }
     request_body = {
-        "webHookUrl": webhook_url,
-        "redirectUrl": redirect_url,
         "amount": amount,
-        "merchantPaymInfo": [merchants_info],
+        "merchantPaymInfo": merchants_info,
+        "redirectUrl": redirect_url,
+        "webHookUrl": webhook_url
     }
     headers = {"X-Token": settings.MONOBANK_TOKEN}
 
     r = requests.post(
         "https://api.monobank.ua/api/merchant/invoice/create",
         headers=headers,
-        json=request_body,
+        json=request_body
     )
     r.raise_for_status()
     order_invoice.order_id = r.json()["invoiceId"]
