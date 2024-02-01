@@ -55,12 +55,12 @@ def create_invoice(order, webhook_url, redirect_url):
 
     order_invoice = OrderInvoice.objects.create()
     order_invoice.orders.add(order)
-    
+
     amount = 0
     basket_order = []
 
     for car in Car.objects.filter(owner__isnull=True, blocked_by_order=order).all():
-        amount += car.car_type.price
+        amount += car.car_type.price * 100
         basket_order.append(
             {"name": car.car_type.name, "qty": 1, "sum": car.car_type.price * 100}
         )
