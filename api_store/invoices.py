@@ -49,7 +49,7 @@ def verify_signature(request):
         raise Exception("Signature is not valid")
 
 
-def create_invoice(order, webhook_url):
+def create_invoice(order, webhook_url, redirect_url):
     if OrderInvoice.objects.filter(orders__in=order).exists():
         return OrderInvoice.objects.filter(orders__in=order).first().invoice_url
 
@@ -67,25 +67,27 @@ def create_invoice(order, webhook_url):
         )
 
     merchants_info = {
-        "reference": str(order.id),
+        "reference": str(order_invoice.id),
         "destination": "Покупка машины",
         "basketOrder": basket_order,
     }
     request_body = {
         "webHookUrl": webhook_url,
+        "redirectUrl": redirect_url,
         "amount": amount,
-        "merchantPaymInfo": merchants_info,
+        "merchantPaymInfo": [merchants_info],
     }
     headers = {"X-Token": settings.MONOBANK_TOKEN}
 
     r = requests.post(
         "https://api.monobank.ua/api/merchant/invoice/create",
-        json=request_body,
         headers=headers,
+        json=request_body,
     )
     r.raise_for_status()
-
     order_invoice.order_id = r.json()["invoiceId"]
     order_invoice.invoice_url = r.json()["pageUrl"]
     order_invoice.status = "created"
     order_invoice.save()
+
+    return r.json()["pageUrl"]

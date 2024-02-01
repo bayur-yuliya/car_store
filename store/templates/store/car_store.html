@@ -40,6 +40,9 @@ h3 {
     background: #DAE1F5;
     padding: 2px 1em 0 1em;
 }
+.pagination {
+    text-align: center;
+}
 </style>
 
 <div class="title">
@@ -51,8 +54,8 @@ h3 {
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="textcols">
-    {% if all_cars %}
-        {%  for el in all_cars  %}
+    {% if page_obj %}
+        {%  for el in page_obj  %}
             <div class="column">
                 <img style="float: right;" class="img-car" src="{{ el.photo.url }}" width="auto" height="230px" >
                 <p>{{  el.car_type.brand  }}  <h2><a href="{%  url 'update_car' el.id %}">{{  el.car_type  }}</a> - {{  el.color  }}  </h2></p>
@@ -68,6 +71,23 @@ h3 {
         {%  endfor  %}
     {% else %}
         No cars
+    {%  endif  %}
+    </div>
+
+    <div class="pagination" >
+
+    {%  if page_obj.has_previous %}
+        <a href="?page={{page_obj.previous_page_number}}">{{page_obj.previous_page_number}}</a>
+    {%  endif  %}
+
+    {%  for page in page_obj.paginator.page_range  %}
+        {%  if page_obj.number == page  %}
+            {{ page_obj.number }}
+        {%  endif  %}
+    {%  endfor  %}
+
+    {%  if page_obj.has_next %}
+        <a href="?page={{page_obj.next_page_number}}">{{page_obj.next_page_number}}</a>
     {%  endif  %}
     </div>
     <input class="input_button" type="submit" value="Оформление заказ">

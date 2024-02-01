@@ -7,6 +7,7 @@ from . import views
 router = routers.DefaultRouter()
 router.register(r"cars", views.CarViewSet, "car")
 router.register(r"car-types", views.CarTypeViewSet, "car_type")
+router.register(r"dealership", views.DealershipViewSet, "dealership")
 router.register(r"order", views.OrderView, "order")
 
 urlpatterns = router.urls

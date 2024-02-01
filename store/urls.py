@@ -11,4 +11,5 @@ urlpatterns = [
         views.order_is_processed,
         name="order_is_processed",
     ),
+    path("purchased_cars/", views.purchased_cars, name="purchased_cars"),
 ]

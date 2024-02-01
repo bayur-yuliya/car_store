@@ -89,7 +89,7 @@ class OrderQuantity(models.Model):
 
 
 class OrderInvoice(models.Model):
-    order = models.ManyToManyField(Order)
+    orders = models.ManyToManyField(Order)
     order_id = models.CharField(max_length=100, null=True)
     invoice_url = models.CharField(max_length=100, null=True)
     status = models.CharField(max_length=100, null=True)

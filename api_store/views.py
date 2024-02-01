@@ -1,30 +1,53 @@
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from rest_framework import generics, status, viewsets
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
 
 from api_store.invoices import verify_signature, create_invoice
 from api_store.serializers import (
     CarTypeSerializer,
     CarSerializer,
     OrderSerializer,
+    DealershipSerializer,
 )
 from store.models import Car, CarType, Client, Order, OrderQuantity, Dealership
+
+
+class DealershipSetPagination(PageNumberPagination):
+    page_size = 2
+    page_size_query_param = "page_size"
+    max_page_size = 10
 
 
 class CarTypeViewSet(viewsets.ModelViewSet):
     queryset = CarType.objects.all()
     serializer_class = CarTypeSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["name"]
+
+
+class DealershipViewSet(viewsets.ModelViewSet):
+    queryset = Dealership.objects.all()
+    serializer_class = DealershipSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_class = DealershipSetPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["name"]
 
 
 class CarViewSet(viewsets.ModelViewSet):
     queryset = Car.objects.filter(owner__isnull=True, blocked_by_order__isnull=True)
     serializer_class = CarSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["year"]
 
 
 class OrderView(
