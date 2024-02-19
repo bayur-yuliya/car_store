@@ -1,0 +1,268 @@
+openapi: 3.0.0
+info:
+  title: API-cars
+  version: 1.0.0
+  description: car_store_api
+servers:
+  - url: http://127.0.0.1:8000/api/
+paths:
+  /api/cars:
+    get:
+      summary: Get a list of cars
+      tags:
+        - Cars
+      responses:
+        '200':
+          description: A successful response
+          content:
+            application/json:
+              example:
+                - id: 1
+                  car_type: 1
+                  color: "red"
+                  "year": 2024
+                  "image": "https://hilel-task18.s3.amazonaws.com/default_img/example"
+                - id: 2
+                  car_type: 1
+                  color: "black"
+                  "year": 2024
+                  "image": "https://hilel-task18.s3.amazonaws.com/default_img/example1"
+        '405':
+          description: Incorrect method
+        '500':
+          description: Internal Server Error
+    post:
+      summary: Create car
+      tags:
+        - Cars
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              - id: 1
+                car_type: 1
+                color: "red"
+                "year": 2024
+                "image": "https://hilel-task18.s3.amazonaws.com/default_img/example"
+      responses:
+        '201':
+          description: A successful response
+          content:
+            application/json:
+              example:
+                - id: 1
+                  car_type: 1
+                  color: "red"
+                  "year": 2024
+                  "image": "https://hilel-task18.s3.amazonaws.com/default_img/example"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                message: "Request body must be JSON or All fields are required"
+  /api/cars/{pk}:
+    get:
+      summary: Get one car by pk
+      tags:
+        - Cars
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A successful response
+          content:
+            application/json:
+              example:
+                - id: 1
+                  car_type: 1
+                  color: "red"
+                  "year": 2024
+                  "image": "https://hilel-task18.s3.amazonaws.com/default_img/example"
+        '404':
+          description: Car not found
+          content:
+            application/json:
+              example:
+                message: "Not found"
+        '405':
+          description: Incorrect method
+        '500':
+          description: Internal Server Error
+    put:
+      summary: Car update
+      tags:
+        - Cars
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              - id: 1
+                car_type: 2
+                color: "blue"
+                "year": 2023
+                "image": "https://hilel-task18.s3.amazonaws.com/default_img/example-test"
+      responses:
+        "200":
+          description: A successful response
+          content:
+            application/json:
+              example:
+                - id: 1
+                  car_type: 2
+                  color: "blue"
+                  "year": 2023
+                  "image": "https://hilel-task18.s3.amazonaws.com/default_img/example-test"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                message: "Request body must be JSON or All fields are required"
+        '404':
+          description: Car not found
+          content:
+            application/json:
+              example:
+                message: "Not found"
+  /car-types:
+    get:
+      summary: Get car types
+      tags:
+        - Car types
+      responses:
+        '200':
+          description: A successful response
+          content:
+            application/json:
+              example:
+                - id: 1
+                  name: Test
+                  brand: BMW
+                  price: 100
+    post:
+      summary: Create car type
+      tags:
+        - Car types
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              - id: 2
+                name: Test1
+                brand: BMW1
+                price: 200
+      responses:
+        "201":
+          description: A successful response
+          content:
+            application/json:
+              example:
+                - id: 2
+                  name: Test1
+                  brand: BMW1
+                  price: 200
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                message: "Request body must be JSON or fields are required"
+  /api/order/{pk}:
+    get:
+      summary: Get order
+      tags:
+        - Order
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A successful response
+          content:
+            application/json:
+              example:
+                - id: 1
+                  name: Test
+                  brand: BMW
+                  price: 200
+        '404':
+          description: Car not found
+          content:
+            application/json:
+              example:
+                message: "Not found"
+        '405':
+          description: Incorrect method
+        '500':
+          description: Internal Server Error
+    post:
+      summary: Create order
+      tags:
+        - Order
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              - id: 1
+                name: 1
+                color: 'red'
+                year: 2024
+                image: "https://hilel-task18.s3.amazonaws.com/default_img/example"
+      responses:
+        "200":
+          description: A successful response
+          content:
+            application/json:
+              example:
+                "message": "Successful create order"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                message: "Request body must be JSON or fields are required"
+        '405':
+          description: Incorrect method
+        '500':
+          description: Internal Server Error
+    delete:
+      summary: Delete order
+      tags:
+        - Order
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: A successful response
+          content:
+            application/json:
+              example:
+                "message": "The order was successfully deleted"

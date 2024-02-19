@@ -75,6 +75,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "store.apps.StoreConfig",
+    "api_store.apps.ApiStoreConfig",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
@@ -186,15 +188,14 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATIC_URL = "static/"
 
 # media
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # aws storage
 AWS_S3_REGION_NAME = "eu-central-1"
 AWS_STORAGE_BUCKET_NAME = "hilel-task18"
 AWS_S3_ACCESS_KEY_ID = os.getenv("AWS_S3_ACCESS_KEY_ID")
 AWS_S3_SECRET_ACCESS_KEY = os.getenv("AWS_S3_SECRET_ACCESS_KEY")
-
 STORAGES = {
     # Enable WhiteNoise's GZip and Brotli compression of static assets:
     # https://whitenoise.readthedocs.io/en/latest/django.html#add-compression-and-caching-support
@@ -258,9 +259,16 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
-ACCOUNT_FORMS = {
-                    'signup': 'store.forms.RegisterUserForm'
-                 }
+ACCOUNT_FORMS = {"signup": "store.forms.RegisterUserForm"}
+
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
