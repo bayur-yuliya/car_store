@@ -51,9 +51,15 @@ class Command(BaseCommand):
 
         Client.objects.create(name="Tonya", email="test@gmail.com", phone="0387410203")
         Dealership.objects.create(name="OdessaBMW")
-        my_instance = Dealership.objects.get(pk=1)
+        Dealership.objects.create(name="VinnitsaBMW")
+        Dealership.objects.create(name="ChernigovBMW")
+        Dealership.objects.create(name="LvivBMW")
+        Dealership.objects.create(name="ChernivtsiBMW")
+        Dealership.objects.create(name="KyivBMW")
+        for el in range(1, 7):
+            my_instance = Dealership.objects.get(pk=el)
 
-        my_instance.available_car_types.set([CarType.objects.get(id=1)])
-        my_instance.clients.set([Client.objects.get(id=1)])
+            my_instance.available_car_types.set([CarType.objects.get(id=1)])
+            my_instance.clients.set([Client.objects.get(id=1)])
 
         self.stdout.write(self.style.SUCCESS("Все прошло успешно!"))
