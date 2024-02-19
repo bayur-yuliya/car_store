@@ -16,23 +16,22 @@ h3 {
 }
 .textcols {
     background: #617DC7;
-    display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
-    width: 100%;
+    display: grid;
+    grid-template-columns: 2fr 2fr 2fr;
 }
+
 .column {
-    background: #DAE1F5;
-    white-space: normal;
-    width: 50%;
-    flex-direction: column;
 	flex-basis: 100%;
     vertical-align: top;
-    border: 1px dotted #939;
-    flex: 0 0 calc(25% - 5px);
+    background: #DAE1F5;
     padding-left: 38px;
-    margin: 25px;
+    margin: 30px;
+    border: 1px dotted #939;
+    max-width: 75%;
+    flex: 0 0 calc(25% - 5px);
 }
+
 .input_button {
     margin: 0 auto;
     display: block;
@@ -51,45 +50,53 @@ h3 {
     <a href="{%  url 'account_logout'  %}">Выйти</a>
 <h1>Каталог машин</h1>
 </div>
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="textcols">
+
+<div class="textcols">
     {% if page_obj %}
         {%  for el in page_obj  %}
-            <div class="column">
+            <form method="POST"  enctype="multipart/form-data" action="add/{{  el.id  }}">
+                {% csrf_token %}
+                <div class="column">
                 <img style="float: right;" class="img-car" src="{{ el.photo.url }}" width="auto" height="230px" >
                 <p>{{  el.car_type.brand  }}  <h2><a href="{%  url 'update_car' el.id %}">{{  el.car_type  }}</a> - {{  el.color  }}  </h2></p>
 
                 <p>Цена: ${{  el.car_type.price  }}</p>
                 <p></p>
-                {%  if el in blocked_cars  %}
-                    <label>Выбрать<input class="input_button" type="submit" name='select' value='{{  el.id  }}' disabled></label>
+                {%  if el.blocked_by_order is not None  %}
+                    <label>Выбрать<input class="input_button" type="submit" value='Заказать' disabled></label>
                 {%  else  %}
-                    <label>Выбрать<input class="input_button" type="submit" name='select' value='{{  el.id  }}'></label>
+                    <label>Выбрать<input class="input_button" type="submit" value='Заказать'></label>
                 {%  endif  %}
-             </div>
+                </div>
+            </form>
         {%  endfor  %}
     {% else %}
         No cars
     {%  endif  %}
-    </div>
+</div>
 
-    <div class="pagination" >
+<div class="pagination" >
 
-    {%  if page_obj.has_previous %}
-        <a href="?page={{page_obj.previous_page_number}}">{{page_obj.previous_page_number}}</a>
+{%  if page_obj.has_previous %}
+    <a href="?page={{page_obj.previous_page_number}}">{{page_obj.previous_page_number}}</a>
+{%  endif  %}
+
+{%  for page in page_obj.paginator.page_range  %}
+    {%  if page_obj.number == page  %}
+        {{ page_obj.number }}
     {%  endif  %}
+{%  endfor  %}
 
-    {%  for page in page_obj.paginator.page_range  %}
-        {%  if page_obj.number == page  %}
-            {{ page_obj.number }}
-        {%  endif  %}
-    {%  endfor  %}
-
-    {%  if page_obj.has_next %}
-        <a href="?page={{page_obj.next_page_number}}">{{page_obj.next_page_number}}</a>
-    {%  endif  %}
-    </div>
+{%  if page_obj.has_next %}
+    <a href="?page={{page_obj.next_page_number}}">{{page_obj.next_page_number}}</a>
+{%  endif  %}
+</div>
+<form method="POST">
+    {% csrf_token %}
     <input class="input_button" type="submit" value="Оформление заказ">
 </form>
+
 {%  endblock  %}
+
+
+Не получается сделать расположение колонок в несколько рядов. Не могу понять в чем ошибка. Проблема в css

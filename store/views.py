@@ -56,30 +56,36 @@ def cars(request):
             is_paid=False,
         )
 
-    cars_id_list = []
+    return redirect(reverse("order", kwargs={"order_id": order.id}))
 
-    if request.POST.get("select"):
-        select = request.POST.get("select")
-        quantity = 1
-        order_quantity = OrderQuantity.objects.get_or_create(
-            car_type=Car.objects.get(id=int(select)).car_type,
-            quantity=quantity,
-            order=Order.objects.get(id=order.id),
+
+def add_to_cart(request, car_id):
+    try:
+        client, existence = Client.objects.get_or_create(
+            name=request.user.username, email=request.user.email, phone="0387410203"
         )
+    except AttributeError:
+        return redirect("account_login")
 
-        if order_quantity[1] is False:
-            order_quantity[0].quantity = order_quantity[0].quantity + 1
-            order_quantity[0].save()
+    order, is_created = Order.objects.get_or_create(
+        client=client,
+        dealership=Dealership.objects.get(id=1),
+        is_paid=False,
+    )
+    quantity = 1
+    order_quantity, is_created = OrderQuantity.objects.get_or_create(
+        car_type=Car.objects.get(id=int(car_id)).car_type,
+        quantity=quantity,
+        order=order,
+    )
 
-        cars_id_list.append(int(select))
+    if not is_created:
+        order_quantity.quantity = order_quantity.quantity + 1
+        order_quantity.save()
 
-        for el in cars_id_list:
-            Car.objects.get(id=el).block(order=Order.objects.get(id=order.id))
+    Car.objects.get(id=car_id).block(order=order)
 
-        return redirect(reverse("cars"))
-
-    order_id = order.id
-    return redirect(reverse("order", kwargs={"order_id": order_id}))
+    return redirect(reverse("cars"))
 
 
 def update_car(request, car_id):
