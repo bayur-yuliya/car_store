@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     "store.apps.StoreConfig",
     "api_store.apps.ApiStoreConfig",
     "rest_framework",
+    "django_filters",
 ]
 
 MIDDLEWARE = [
@@ -264,11 +265,15 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
 ACCOUNT_FORMS = {"signup": "store.forms.RegisterUserForm"}
 
-
+# REST FRAMEWORK
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+    ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
+MONOBANK_TOKEN = os.getenv("MONOBANK_TOKEN")
