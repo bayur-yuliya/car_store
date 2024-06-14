@@ -82,18 +82,22 @@ h3 {
 
 <div class="pagination" >
 
-{%  if page_obj.has_previous %}
-    <a href="?page={{page_obj.previous_page_number}}">{{page_obj.previous_page_number}}</a>
-{%  endif  %}
-
-{%  for page in page_obj.paginator.page_range  %}
-    {%  if page_obj.number == page  %}
-        {{ page_obj.number }}
+{%  if page_obj.has_other_pages  %}
+    {%  if page_obj.has_previous %}
+        <a href="?page={{page_obj.previous_page_number}}">&lt</a>
     {%  endif  %}
-{%  endfor  %}
 
-{%  if page_obj.has_next %}
-    <a href="?page={{page_obj.next_page_number}}">{{page_obj.next_page_number}}</a>
+    {%  for page in page_obj.paginator.page_range  %}
+        {%  if page_obj.number == page  %}
+            {{ page_obj.number }}
+        {%  elif page >= page_obj.number|add:-2  and page <= page_obj.number|add:2 %}
+            <a href="?page={{page}}">{{page}}</a>
+        {%  endif  %}
+    {%  endfor  %}
+
+    {%  if page_obj.has_next %}
+        <a href="?page={{page_obj.next_page_number}}">&gt</a>
+    {%  endif  %}
 {%  endif  %}
 </div>
 <form method="POST">
@@ -102,6 +106,3 @@ h3 {
 </form>
 
 {%  endblock  %}
-
-
-Не получается сделать расположение колонок в несколько рядов. Не могу понять в чем ошибка. Проблема в css
