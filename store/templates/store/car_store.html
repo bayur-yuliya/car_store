@@ -5,9 +5,13 @@
 {%  block context  %}
 <style>
 body {
-    background: #B5C9FF;
+    background: #FFFFFF;
 }
 .title {
+    text-align: right;
+    margin: 35px;
+}
+.title1 {
     text-align: center;
     margin: 35px;
 }
@@ -15,7 +19,7 @@ h3 {
     text-align: right;
 }
 .textcols {
-    background: #617DC7;
+    background: #F0F8FF;
     flex-direction: row;
     display: grid;
     grid-template-columns: 2fr 2fr 2fr;
@@ -24,7 +28,7 @@ h3 {
 .column {
 	flex-basis: 100%;
     vertical-align: top;
-    background: #DAE1F5;
+    background: #FFFFFF;
     padding-left: 38px;
     margin: 30px;
     border: 1px dotted #939;
@@ -48,9 +52,10 @@ h3 {
     <a href="{%  url 'account_signup'  %}">Регистрация</a>  |
     <a href="{%  url 'account_login'  %}">Войти</a>  |
     <a href="{%  url 'account_logout'  %}">Выйти</a>
-<h1>Каталог машин</h1>
-</div>
+<hr>
 
+</div>
+<h1 class="title1">Каталог машин</h1>
 <div class="textcols">
     {% if page_obj %}
         {%  for el in page_obj  %}
