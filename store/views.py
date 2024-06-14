@@ -13,7 +13,7 @@ def cars(request):
     if request.method == "GET":
         all_cars = Car.objects.filter(owner__isnull=True)
 
-        paginator = Paginator(all_cars, 6)
+        paginator = Paginator(all_cars, 15)
         page_number = request.GET.get("page")
         page_obj = paginator.get_page(page_number)
 
