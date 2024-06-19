@@ -67,9 +67,9 @@ h3 {
                 <p>Цена: ${{  el.car_type.price  }}</p>
                 <p></p>
                 {%  if el.blocked_by_order is not None  %}
-                    <label>Выбрать<input class="input_button" type="submit" value='Заказать' disabled></label>
+                    <input class="input_button" type="submit" value='Заказать' disabled>
                 {%  else  %}
-                    <label>Выбрать<input class="input_button" type="submit" value='Заказать'></label>
+                    <input class="input_button" type="submit" value='Заказать'>
                 {%  endif  %}
                 </div>
             </form>
