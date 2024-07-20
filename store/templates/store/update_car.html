@@ -13,17 +13,29 @@ body {
     padding: 5px 2em 0 2em;
     text-align: center;
     font-size: 20px;
-    margin-left: 87%;
+    margin-left: 2%;
+}
+.info_car {
+    border: 1px dotted #939;
+    padding-left: 38px;
+    margin-right: 600px;
+    margin-top: 55px;
+    margin-left: 3%;
+}
+.img-car {
+    margin-right: 55px;
 }
 </style>
 
 <a href="{%  url 'cars'  %}">Главная страница</a>
+<hr>
 <img style="float: right;" class="img-car" src="{{ car.photo.url }}" width="500px" height="70%" >  <br>
-<h1>
-{{car.car_type.brand}}  -
-{{car.car_type}}
-</h1>
-{{car.year}} <br>
+<div class="info_car">
+    <h1>
+    {{car.car_type.brand}}  -
+    {{car.car_type}}
+    </h1>
+    {{car.year}} <br>
 
 <br><br><br>
 <form method="POST" enctype="multipart/form-data">
@@ -31,7 +43,6 @@ body {
     {{  form.as_p  }}
     <p><button class="input_button" type="submit" >Обновить картинку</button></p>
 </form>
-
-
+</div>
 
 {%  endblock  %}
