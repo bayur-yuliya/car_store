@@ -111,19 +111,18 @@ def order(request, order_id):
     if request.method == "POST":
         orders = Order.objects.get(client=Client.objects.get(email=request.user.email))
         full_url_webhook = "https://webhook.site/2f8f0a75-24c7-4907-ac1d-efeb1e58d1e8"
-        full_url_orders = f"https://sheltered-beach-61324-b8aaf597abf6.herokuapp.com/order_is_processed/{order_id}"
-
+        full_url_orders = f"http://127.0.0.1:8000/order_is_processed/{order_id}"
         invoice_url = create_invoice(orders, full_url_webhook, full_url_orders)
 
-        for el in Car.objects.filter(blocked_by_order=order_created.id):
+        for car in Car.objects.filter(blocked_by_order=order_created.id):
             licence_number = random.randint(1000, 9999)
             if Licence.objects.filter(number=f"BH {licence_number} IT").exists():
                 licence_number = random.randint(1000, 9999)
-            Licence.objects.create(car=el, number=f"BH {licence_number} IT")
+            Licence.objects.create(car=car, number=f"BH {licence_number} IT")
 
             order_created.is_paid = True
             order_created.save()
-            el.sell()
+            car.sell()
         return redirect(invoice_url)
 
     data = {
