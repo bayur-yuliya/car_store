@@ -277,3 +277,6 @@ REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 MONOBANK_TOKEN = os.getenv("MONOBANK_TOKEN")
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
