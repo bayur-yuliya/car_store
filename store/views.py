@@ -30,12 +30,15 @@ def cars(request):
                 "page_obj": page_obj,
             },
         )
-    try:
-        client, existence = Client.objects.get_or_create(
-            name=request.user.username, email=request.user.email, phone="0387410203"
-        )
-    except AttributeError:
+    if not request.user.is_authenticated:
         return redirect("account_login")
+
+    try:
+        client, created = Client.objects.get_or_create(
+            name=request.user.username, email=request.user.email, defaults={'phone': '0387410203'}
+        )
+    except Client.MultipleObjectsReturned:
+        client = Client.objects.filter(name=request.user.username, email=request.user.email).first()
 
     find_order = Order.objects.filter(
         client=client,
