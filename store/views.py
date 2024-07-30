@@ -35,10 +35,14 @@ def cars(request):
 
     try:
         client, created = Client.objects.get_or_create(
-            name=request.user.username, email=request.user.email, defaults={'phone': '0387410203'}
+            name=request.user.username,
+            email=request.user.email,
+            defaults={"phone": "0387410203"},
         )
     except Client.MultipleObjectsReturned:
-        client = Client.objects.filter(name=request.user.username, email=request.user.email).first()
+        client = Client.objects.filter(
+            name=request.user.username, email=request.user.email
+        ).first()
 
     find_order = Order.objects.filter(
         client=client,
