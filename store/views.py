@@ -67,12 +67,17 @@ def cars(request):
 
 
 def add_to_cart(request, car_id):
+    if not request.user.is_authenticated:
+        return redirect("account_login")
+
     try:
         client, existence = Client.objects.get_or_create(
             name=request.user.username, email=request.user.email, phone="0387410203"
         )
-    except AttributeError:
-        return redirect("account_login")
+    except Client.MultipleObjectsReturned:
+        client = Client.objects.filter(
+            name=request.user.username, email=request.user.email
+        ).first()
 
     order, is_created = Order.objects.get_or_create(
         client=client,
@@ -136,14 +141,17 @@ def order(request, order_id):
         "order_id": order_id,
         "cars": cars,
     }
+
     return render(request, "store/order_page.html", context=data)
 
 
 def order_is_processed(request, order_id):
     if request.GET.get("index_page"):
         return redirect(reverse("cars"))
+
     if request.GET.get("purchased_cars"):
         return redirect(reverse("purchased_cars"))
+
     return render(
         request, "store/order_is_processed.html", context={"order_id": order_id}
     )
