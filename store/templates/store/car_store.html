@@ -5,9 +5,13 @@
 {%  block context  %}
 <style>
 body {
-    background: #B5C9FF;
+    background: #FFFFFF;
 }
 .title {
+    text-align: right;
+    margin: 35px;
+}
+.title1 {
     text-align: center;
     margin: 35px;
 }
@@ -15,57 +19,80 @@ h3 {
     text-align: right;
 }
 .textcols {
-    background: #617DC7;
+    background: #F0F8FF;
     flex-direction: row;
     display: grid;
-    grid-template-columns: 2fr 2fr 2fr;
+    grid-template-columns: 500px 500px 500px;
 }
 
 .column {
 	flex-basis: 100%;
     vertical-align: top;
-    background: #DAE1F5;
-    padding-left: 38px;
-    margin: 30px;
+    background: #FFFFFF;
+    padding-left: 15px;
+    margin: 10px;
     border: 1px dotted #939;
-    max-width: 75%;
+    height: 200px;
     flex: 0 0 calc(25% - 5px);
+}
+
+.pagination {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 20px;
+}
+
+.pagination_num {
+    height: 25px;
+    width: 25px;
+    background-color: #F0F8FF;
+    border-radius: 50%;
+    display: inline-block;
 }
 
 .input_button {
     margin: 0 auto;
     display: block;
-    margin-top: 25px;
+    margin-top: 50px;
     background: #DAE1F5;
     padding: 2px 1em 0 1em;
 }
-.pagination {
-    text-align: center;
+
+.input_order_button{
+    margin: 0 auto;
+    display: block;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    background: #DAE1F5;
+    padding: 5px 2em 0 2em;
+    font-size: 20px;
 }
+
 </style>
 
 <div class="title">
     <a href="{%  url 'account_signup'  %}">Регистрация</a>  |
     <a href="{%  url 'account_login'  %}">Войти</a>  |
     <a href="{%  url 'account_logout'  %}">Выйти</a>
-<h1>Каталог машин</h1>
-</div>
+<hr>
 
+</div>
+<h1 class="title1">Каталог машин</h1>
 <div class="textcols">
     {% if page_obj %}
         {%  for el in page_obj  %}
             <form method="POST"  enctype="multipart/form-data" action="add/{{  el.id  }}">
                 {% csrf_token %}
                 <div class="column">
-                <img style="float: right;" class="img-car" src="{{ el.photo.url }}" width="auto" height="230px" >
+                <img style="float: right;" class="img-car" src="{{ el.photo.url }}" width="auto" height="200px" >
                 <p>{{  el.car_type.brand  }}  <h2><a href="{%  url 'update_car' el.id %}">{{  el.car_type  }}</a> - {{  el.color  }}  </h2></p>
 
                 <p>Цена: ${{  el.car_type.price  }}</p>
                 <p></p>
                 {%  if el.blocked_by_order is not None  %}
-                    <label>Выбрать<input class="input_button" type="submit" value='Заказать' disabled></label>
+                    <input class="input_button" type="submit" value='Заказать' disabled>
                 {%  else  %}
-                    <label>Выбрать<input class="input_button" type="submit" value='Заказать'></label>
+                    <input class="input_button" type="submit" value='Заказать'>
                 {%  endif  %}
                 </div>
             </form>
@@ -77,26 +104,27 @@ h3 {
 
 <div class="pagination" >
 
-{%  if page_obj.has_previous %}
-    <a href="?page={{page_obj.previous_page_number}}">{{page_obj.previous_page_number}}</a>
-{%  endif  %}
-
-{%  for page in page_obj.paginator.page_range  %}
-    {%  if page_obj.number == page  %}
-        {{ page_obj.number }}
+{%  if page_obj.has_other_pages  %}
+    {%  if page_obj.has_previous %}
+        <a class="pagination_num" href="?page={{page_obj.previous_page_number}}">&lt</a>
     {%  endif  %}
-{%  endfor  %}
 
-{%  if page_obj.has_next %}
-    <a href="?page={{page_obj.next_page_number}}">{{page_obj.next_page_number}}</a>
+    {%  for page in page_obj.paginator.page_range  %}
+        {%  if page_obj.number == page  %}
+            {{ page_obj.number }}
+        {%  elif page >= page_obj.number|add:-2  and page <= page_obj.number|add:2 %}
+            <a class="pagination_num" href="?page={{page}}">{{page}}</a>
+        {%  endif  %}
+    {%  endfor  %}
+
+    {%  if page_obj.has_next %}
+        <a class="pagination_num" href="?page={{page_obj.next_page_number}}">&gt</a>
+    {%  endif  %}
 {%  endif  %}
 </div>
 <form method="POST">
     {% csrf_token %}
-    <input class="input_button" type="submit" value="Оформление заказ">
+    <input class="input_order_button" type="submit" value="Оформление заказ">
 </form>
 
 {%  endblock  %}
-
-
-Не получается сделать расположение колонок в несколько рядов. Не могу понять в чем ошибка. Проблема в css

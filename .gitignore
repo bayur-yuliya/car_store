@@ -51,3 +51,6 @@ car_shop/__pycache__/
 
 store/migrations/__pycache__/
 store/__pycache__/
+
+.idea/
+.venv/
