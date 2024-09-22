@@ -10,7 +10,6 @@ class Command(BaseCommand):
             if you do not specify a parameter, by default 10 posts are generated"""
 
     def handle(self, *args, **options):
-
         for _ in range(10):
             Car.objects.create(
                 car_type=CarType(id=random.randint(1, 3)),
