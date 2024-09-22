@@ -30,12 +30,19 @@ def cars(request):
                 "page_obj": page_obj,
             },
         )
-    try:
-        client, existence = Client.objects.get_or_create(
-            name=request.user.username, email=request.user.email, phone="0387410203"
-        )
-    except AttributeError:
+    if not request.user.is_authenticated:
         return redirect("account_login")
+
+    try:
+        client, created = Client.objects.get_or_create(
+            name=request.user.username,
+            email=request.user.email,
+            defaults={"phone": "0387410203"},
+        )
+    except Client.MultipleObjectsReturned:
+        client = Client.objects.filter(
+            name=request.user.username, email=request.user.email
+        ).first()
 
     find_order = Order.objects.filter(
         client=client,
@@ -60,12 +67,17 @@ def cars(request):
 
 
 def add_to_cart(request, car_id):
+    if not request.user.is_authenticated:
+        return redirect("account_login")
+
     try:
         client, existence = Client.objects.get_or_create(
             name=request.user.username, email=request.user.email, phone="0387410203"
         )
-    except AttributeError:
-        return redirect("account_login")
+    except Client.MultipleObjectsReturned:
+        client = Client.objects.filter(
+            name=request.user.username, email=request.user.email
+        ).first()
 
     order, is_created = Order.objects.get_or_create(
         client=client,
@@ -111,7 +123,7 @@ def order(request, order_id):
     if request.method == "POST":
         orders = Order.objects.get(client=Client.objects.get(email=request.user.email))
         full_url_webhook = "https://webhook.site/2f8f0a75-24c7-4907-ac1d-efeb1e58d1e8"
-        full_url_orders = f"http://127.0.0.1:8000/order_is_processed/{order_id}"
+        full_url_orders = f"https://sheltered-beach-61324-b8aaf597abf6.herokuapp.com/order_is_processed/{order_id}"
         invoice_url = create_invoice(orders, full_url_webhook, full_url_orders)
 
         for car in Car.objects.filter(blocked_by_order=order_created.id):
@@ -129,14 +141,17 @@ def order(request, order_id):
         "order_id": order_id,
         "cars": cars,
     }
+
     return render(request, "store/order_page.html", context=data)
 
 
 def order_is_processed(request, order_id):
     if request.GET.get("index_page"):
         return redirect(reverse("cars"))
+
     if request.GET.get("purchased_cars"):
         return redirect(reverse("purchased_cars"))
+
     return render(
         request, "store/order_is_processed.html", context={"order_id": order_id}
     )
